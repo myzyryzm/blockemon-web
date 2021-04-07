@@ -33,7 +33,7 @@ export default function getConfig(): IConfig {
         }
     }
     // @ts-ignore
-    if (process.env.REACT_APP_ENV === 'prod') {
+    if (process.env.NODE_ENV === 'prod') {
         config = {
             ...config,
             networkId: 'mainnet',
