@@ -2,5 +2,5 @@ node_modules
 venv
 build
 __pycache__
-build_scripts/.env
+build_scripts/*.env
 certs

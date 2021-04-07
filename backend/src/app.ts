@@ -10,6 +10,8 @@ import path from 'path'
 import { getSignature } from './signature/utils'
 import HttpError from './common/http-error'
 
+// todo: turn this into an environment variable
+// const mongoUrl = process.env.MONGO_URL
 const mongoUrl =
     'mongodb+srv://nearlythere:yn9035768nej@cluster0.a4gtv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
