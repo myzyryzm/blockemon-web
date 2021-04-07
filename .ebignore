@@ -1,0 +1,12 @@
+build_scripts
+input
+logs
+media
+misc
+static
+web
+.gitignore
+.git
+build_and_deploy.py
+docker-compose.yml
+README.md
