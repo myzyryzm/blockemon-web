@@ -24,13 +24,14 @@ app.use(bodyParser.json())
 
 app.use('/api/signature', signatureRoutes)
 app.use('/api/auth', authRoutes)
-app.use(express.static(staticPath))
+// app.use(express.static(staticPath))
 app.use(express.static(publicPath))
+app.use('/static', express.static(staticPath))
 
 // todo: figure out all the routes and "whitelist" them?
-// app.use((req, res, next) => {
-//     res.sendFile(htmlPath)
-// })
+app.use((req, res, next) => {
+    res.sendFile(htmlPath)
+})
 
 // define a route handler for the default home page
 app.get('/', async (req, res) => {
@@ -38,10 +39,6 @@ app.get('/', async (req, res) => {
     for (let i = 0; i < 64; i++) {
         s += 'd'
     }
-    let secretKey =
-        '2FHGf2HNKa1dHeUgZuT3Xu1eG5Pmn1b9VvXH9EXN2pG86wzpRXgfWKoTLcJjP4Rj9rbknQHa8REfmkTFMkmDXY2Q'
-    const a = await getSignature(secretKey)
-    console.log(a)
     res.send(s)
 })
 

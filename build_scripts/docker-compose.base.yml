@@ -1,0 +1,17 @@
+# @format
+
+nginx:
+    image:
+    links:
+        - web:web
+    ports:
+        - 443:443
+        - 80:80
+    volumes:
+web:
+    command:
+    environment:
+    image:
+    ports:
+        - 8080:8080
+    volumes:

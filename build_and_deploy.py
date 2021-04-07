@@ -1,10 +1,9 @@
 import argparse
 import sys
-import subprocess
 import os
 import json
 import yaml
-import requests
+from utils import subprocess_check_output
 
 build_folder = 'build_scripts'
 thispath = os.path.dirname(os.path.abspath(__file__))
@@ -13,35 +12,8 @@ ebpath = '/var/app/current/'
 dc_base = 'docker-compose.base.yml'
 dc = 'docker-compose.yml'
 dc_env_file = 'dc_envs.env'
-misc_env_file = 'misc.env'
-docker_owner = '778784628106.dkr.ecr.us-west-2.amazonaws.com'
+docker_owner = '846558801598.dkr.ecr.us-west-2.amazonaws.com'
 
-def subprocess_check_output(args, kwargs={}, assert_hard=False, printcmd:bool=True):
-    assert isinstance(args,list) or isinstance(args,tuple), str(type(args))
-    failed = False
-    if 'stderr' not in kwargs:
-        kwargs['stderr'] = subprocess.STDOUT
-    args = [str(arg) for arg in args]
-    if printcmd:
-        print("running: \'"+str(' '.join(args))+"\'")
-    
-    try:
-        ret = subprocess.check_output(args, **kwargs) # return code would always be zero, would fail otherwise
-        print('ret')
-        print(ret)
-    except subprocess.CalledProcessError as eee:
-        mymsg = "failed command:\n"+str(args)+"\n" \
-               +str(eee.output.decode('utf-8'))
-        if assert_hard:
-            assert 0, mymsg
-        ret = "WARNING: subprocess_check_output: "+mymsg
-        # print(ret)
-        #raise subprocess.CalledProcessError
-        failed = True
-    
-    if isinstance(ret,bytes):
-        ret = ret.decode('utf-8')
-    return ret, failed
 
 def get_envs(env_file):
     envs = []
@@ -228,10 +200,6 @@ if os.path.isfile(env_file) is False:
     print(f'no build env file {env_file}')
     quit(400)
     
-staging_ip = ''
-misc_env_path = os.path.join(buildpath, misc_env_file)
-misc_envs = []
-    
 try:
     envs = get_envs(env_file)
     cmd = ['sh', '/home/startup.sh', deploy_url]
@@ -297,7 +265,7 @@ if npm_build is True:
 
 # LOGGING INTO DOCKER
 if docker_login is True:
-    ret, failed = subprocess_check_output(['sh', os.path.join(buildpath, 'docker_login.sh')])
+    ret, failed = subprocess_check_output(['sh', os.path.join(buildpath, 'docker_login.sh'), docker_owner])
     if failed:
         print('unable to login to docker')
         quit(400)

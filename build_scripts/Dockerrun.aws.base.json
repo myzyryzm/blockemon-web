@@ -1,0 +1,85 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "",
+            "memory": 1024,
+            "mountPoints": [
+                { "containerPath": "/static", "sourceVolume": "_Static" },
+                {
+                    "containerPath": "/usr/local/nginx/conf/nginx.conf",
+                    "sourceVolume": "_ConfigNginx"
+                },
+                {
+                    "containerPath": "/usr/local/nginx/conf/certs",
+                    "sourceVolume": "_ConfigNginxCerts"
+                },
+                {
+                    "containerPath": "/usr/local/nginx/logs",
+                    "sourceVolume": "_Logs"
+                },
+                { "containerPath": "/media", "sourceVolume": "_Media" }
+            ],
+            "name": "nginx",
+            "portMappings": [
+                { "containerPort": 443, "hostPort": 443 },
+                { "containerPort": 80, "hostPort": 80 }
+            ],
+            "links": ["web"],
+            "volumesFrom": [{ "sourceContainer": "web" }],
+            "environment": []
+        },
+        {
+            "command": [],
+            "essential": true,
+            "image": "",
+            "memory": 2048,
+            "mountPoints": [
+                { "containerPath": "/home/static", "sourceVolume": "_Static" },
+                {
+                    "containerPath": "/etc/certs",
+                    "sourceVolume": "_ConfigNginxCerts"
+                },
+                { "containerPath": "/home/media", "sourceVolume": "_Media" },
+                {
+                    "containerPath": "/home/logs",
+                    "sourceVolume": "_Logs"
+                }
+            ],
+            "name": "web",
+            "portMappings": [{ "containerPort": 5000, "hostPort": 5000 }],
+            "environment": [
+                { "name": "LANG", "value": "en_US.UTF-8" },
+                { "name": "HISTTIMEFORMAT", "value": "[%F %T]" },
+                { "name": "TERM", "value": "xterm-256color" }
+            ]
+        }
+    ],
+    "family": "",
+    "volumes": [
+        {
+            "host": { "sourcePath": "/var/app/current/static" },
+            "name": "_Static"
+        },
+        {
+            "host": { "sourcePath": "/var/app/current/media" },
+            "name": "_Media"
+        },
+        {
+            "host": { "sourcePath": "/var/app/current/config/certs" },
+            "name": "_ConfigNginxCerts"
+        },
+        {
+            "host": { "sourcePath": "/var/app/current/config/nginx.conf" },
+            "name": "_ConfigNginx"
+        },
+        { "host": { "sourcePath": "/var/app/current/logs" }, "name": "_Logs" },
+        {
+            "host": {
+                "sourcePath": "/var/app/current/config/supervisor/cleanup.conf"
+            },
+            "name": "_SupervisorConfig"
+        }
+    ]
+}
