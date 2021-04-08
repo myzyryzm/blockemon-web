@@ -46,7 +46,7 @@
                 }
             ],
             "name": "web",
-            "portMappings": [{ "containerPort": 5000, "hostPort": 5000 }],
+            "portMappings": [{ "containerPort": 8080, "hostPort": 8080 }],
             "environment": [
                 { "name": "LANG", "value": "en_US.UTF-8" },
                 { "name": "HISTTIMEFORMAT", "value": "[%F %T]" },
