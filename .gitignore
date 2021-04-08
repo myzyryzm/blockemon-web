@@ -6,6 +6,9 @@ build_scripts/*.env
 certs
 docker-compose.yml
 Dockerrun.aws.json
+logs
+misc
+static
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
