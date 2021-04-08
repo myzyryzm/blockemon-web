@@ -18,8 +18,7 @@
                 {
                     "containerPath": "/usr/local/nginx/logs",
                     "sourceVolume": "_Logs"
-                },
-                { "containerPath": "/media", "sourceVolume": "_Media" }
+                }
             ],
             "name": "nginx",
             "portMappings": [
@@ -41,7 +40,6 @@
                     "containerPath": "/etc/certs",
                     "sourceVolume": "_ConfigNginxCerts"
                 },
-                { "containerPath": "/home/media", "sourceVolume": "_Media" },
                 {
                     "containerPath": "/home/logs",
                     "sourceVolume": "_Logs"
@@ -63,10 +61,6 @@
             "name": "_Static"
         },
         {
-            "host": { "sourcePath": "/var/app/current/media" },
-            "name": "_Media"
-        },
-        {
             "host": { "sourcePath": "/var/app/current/config/certs" },
             "name": "_ConfigNginxCerts"
         },
@@ -74,12 +68,6 @@
             "host": { "sourcePath": "/var/app/current/config/nginx.conf" },
             "name": "_ConfigNginx"
         },
-        { "host": { "sourcePath": "/var/app/current/logs" }, "name": "_Logs" },
-        {
-            "host": {
-                "sourcePath": "/var/app/current/config/supervisor/cleanup.conf"
-            },
-            "name": "_SupervisorConfig"
-        }
+        { "host": { "sourcePath": "/var/app/current/logs" }, "name": "_Logs" }
     ]
 }
