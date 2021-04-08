@@ -2,7 +2,7 @@ import os
 from utils import subprocess_check_output
 
 thispath = os.path.dirname(os.path.abspath(__file__))
-venv_path = os.path.join(thispath, venv)
+venv_path = os.path.join(thispath, 'venv')
 
 # if you dont have the virtual environment then create it
 if os.path.isdir(venv_path) is False:

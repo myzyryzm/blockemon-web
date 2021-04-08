@@ -10,5 +10,5 @@ COPY backend /home/backend
 COPY build /home/build
 RUN mkdir /home/logs
 COPY startup.sh /home/startup.sh
-
+RUN cd /home/backend && npm install --production
 EXPOSE 8080
