@@ -4,6 +4,8 @@ build
 __pycache__
 build_scripts/*.env
 certs
+docker-compose.yml
+Dockerrun.aws.json
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

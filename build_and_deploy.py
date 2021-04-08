@@ -249,13 +249,6 @@ if npm_build is True:
             print('unable to install node modules')
             print(ret)
             quit(400)
-    if npm_install is True:
-        frontend_install = ['sh', os.path.join(buildpath, 'npm_install.sh'), deploy_type]
-        ret, failed = subprocess_check_output(frontend_install)
-        if failed:
-            print('unable to install node modules')
-            print(ret)
-            quit(400)
     frontend_build = ['sh', os.path.join(buildpath, 'npm_build.sh'), deploy_type]
     ret, failed = subprocess_check_output(frontend_build)
     if failed:

@@ -10,6 +10,7 @@ def subprocess_check_output(args, kwargs={}):
     
     try:
         ret = subprocess.check_output(args, **kwargs) # return code would always be zero, would fail otherwise
+        print(ret)
     except subprocess.CalledProcessError as eee:
         mymsg = "failed command:\n"+str(args)+"\n" \
                +str(eee.output.decode('utf-8'))
