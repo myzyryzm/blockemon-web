@@ -7,13 +7,10 @@ import authRoutes from './auth/routes'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import path from 'path'
-import { getSignature } from './signature/utils'
 import HttpError from './common/http-error'
 
 // todo: turn this into an environment variable
-// const mongoUrl = process.env.MONGO_URL
-const mongoUrl =
-    'mongodb+srv://nearlythere:yn9035768nej@cluster0.a4gtv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+const mongoUrl = process.env.MONGO_URL
 
 const app = express()
 const port = 8080 // default port to listen
@@ -22,12 +19,12 @@ const publicPath = path.join(__dirname, '..', 'public')
 const htmlPath = path.join(staticPath, 'index.html')
 app.use(bodyParser.json())
 // todo: test this cors package
-// app.use(cors())
+app.use(cors())
 
 app.use('/api/signature', signatureRoutes)
 app.use('/api/auth', authRoutes)
 // app.use(express.static(staticPath))
-app.use(express.static(publicPath))
+// app.use(express.static(publicPath))
 app.use('/static', express.static(staticPath))
 
 // todo: figure out all the routes and "whitelist" them?
