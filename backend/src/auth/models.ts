@@ -11,3 +11,5 @@ const credentialsSchema = new Schema({
 const Credentials = model('Credentials', credentialsSchema)
 
 export { Credentials }
+
+// genetic sequence: 1000000000 <= Aabbccddee
