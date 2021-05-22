@@ -6,6 +6,13 @@ import logo from './logo.svg'
 import './App.css'
 
 export default function App() {
+    const currentUrl = new URL(window.location.href)
+    const publicKey = currentUrl.searchParams.get('public_key') || ''
+    const allKeys = (currentUrl.searchParams.get('all_keys') || '').split(',')
+    const accountId = currentUrl.searchParams.get('account_id') || ''
+    console.log('publicKey', publicKey)
+    console.log('allKeys', allKeys)
+    console.log('accountId', accountId)
     return (
         <div className='App'>
             <header className='App-header'>
