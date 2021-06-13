@@ -4,6 +4,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import signatureRoutes from './signature/routes'
 import authRoutes from './auth/routes'
+import dragonRoutes from './dragon/routes'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import path from 'path'
@@ -23,6 +24,7 @@ app.use(cors())
 
 app.use('/api/signature', signatureRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/dragons', dragonRoutes)
 // app.use(express.static(staticPath))
 // app.use(express.static(publicPath))
 app.use('/static', express.static(staticPath))

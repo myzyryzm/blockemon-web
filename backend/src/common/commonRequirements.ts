@@ -1,5 +1,4 @@
 /** @format */
-
 export interface IConfig {
     networkId: string // default | mainnet
     nodeUrl: string

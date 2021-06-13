@@ -1,7 +1,7 @@
 /** @format */
 
 import { IConfig } from './commonRequirements'
-const devContract = 'dev-1616732136326-5923628'
+const devContract = 'dev-1623375596557-29073322116606'
 const prodContract = ''
 
 export default function getConfig(): IConfig {
@@ -17,18 +17,8 @@ export default function getConfig(): IConfig {
             ...config,
             GAS: '200000000000000',
             contractMethods: {
-                changeMethods: [
-                    'createPokemon',
-                    'deletePokemon',
-                    'transferPokemon',
-                    'healPokemon',
-                    'trainPokemon',
-                ],
-                viewMethods: [
-                    'getPokemonByOwner',
-                    'getPokemonById',
-                    'getAllPokemon',
-                ],
+                changeMethods: ['breedDragons'],
+                viewMethods: ['getDragonsForOwner'],
             },
         }
     }
