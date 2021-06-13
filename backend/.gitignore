@@ -3,3 +3,4 @@ createCredentials.ts
 getCredentials.ts
 login.ts
 test*.ts
+tweetnacl/*

@@ -7,7 +7,7 @@ import { getDragons } from './controller'
 const router = express.Router()
 
 router.post(
-    '/',
+    '',
     [
         check('message')
             .not()

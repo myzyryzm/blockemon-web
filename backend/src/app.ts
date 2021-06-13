@@ -55,15 +55,17 @@ app.use((error, req, res, next) => {
     res.status(error.code || 500)
     res.json({ message: error.message || 'An unknown error occurred!' })
 })
-
-mongoose
-    .connect(mongoUrl)
-    .then(() => {
-        // start the Express server
-        app.listen(port, () => {
-            console.log(`server started at http://localhost:${port}`)
-        })
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+app.listen(port, () => {
+    console.log(`server started at http://localhost:${port}`)
+})
+// mongoose
+//     .connect(mongoUrl)
+//     .then(() => {
+//         // start the Express server
+//         app.listen(port, () => {
+//             console.log(`server started at http://localhost:${port}`)
+//         })
+//     })
+//     .catch((e) => {
+//         console.log(e)
+//     })

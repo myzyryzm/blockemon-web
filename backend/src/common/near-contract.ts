@@ -1,6 +1,6 @@
 /** @format */
 import fs from 'fs'
-import nearAPI from 'near-api-js'
+import * as nearAPI from 'near-api-js'
 import getConfig from './config'
 
 const {
