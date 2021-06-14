@@ -1,6 +1,10 @@
 /** @format */
 
-import { NUMBER_2_LETTER_OFFSET, S3_BASE_URL } from '../common/constants'
+import {
+    DEFAULT_RESOULTION,
+    NUMBER_2_LETTER_OFFSET,
+    S3_BASE_URL,
+} from '../common/constants'
 import { IDragon, IDragonResponse } from './models'
 
 // bodyBase (8) => ABC (ABC => scales; aBC => no scales; AbC => alt1; abC => alt2; ABc => alt3; aBc => alt4; Abc => alt5; abc => alt6)
@@ -32,18 +36,18 @@ export function getDragonPayload(dragon: IDragon): IDragonResponse {
     markingsPath = hasMarkings ? markingsPath : markingsPath.toUpperCase()
     let finalPath = ''
     if (hasBelly && hasMarkings) {
-        finalPath = `${dragon.bodyColors[0]}/${dragon.bodyColors[1]}/${dragon.bodyColors[2]}/0.png`
+        finalPath = `${dragon.bodyColors[0]}/${dragon.bodyColors[1]}/${dragon.bodyColors[2]}/${DEFAULT_RESOULTION}.png`
     } else if (hasBelly) {
-        finalPath = `${dragon.bodyColors[0]}/${dragon.bodyColors[1]}/none/0.png`
+        finalPath = `${dragon.bodyColors[0]}/${dragon.bodyColors[1]}/none/${DEFAULT_RESOULTION}.png`
     } else if (hasMarkings) {
-        finalPath = `${dragon.bodyColors[0]}/none/${dragon.bodyColors[2]}/0.png`
+        finalPath = `${dragon.bodyColors[0]}/none/${dragon.bodyColors[2]}/${DEFAULT_RESOULTION}.png`
     } else {
-        finalPath = `${dragon.bodyColors[0]}/none/none/0.png`
+        finalPath = `${dragon.bodyColors[0]}/none/none/${DEFAULT_RESOULTION}.png`
     }
     const bodyTexture = `${S3_BASE_URL}/${bodyPath}/${bellyPath}/${markingsPath}/${finalPath}`
-    const hornTexture = `${S3_BASE_URL}/${genesLetter[13]}${genesLetter[14]}${genesLetter[15]}/${dragon.hornColor}.png`
-    const backTexture = `${S3_BASE_URL}/${genesLetter[13]}${genesLetter[14]}${genesLetter[15]}/${dragon.backColor}.png`
-    const wingTexture = `${S3_BASE_URL}/${genesLetter[16]}${genesLetter[17]}${genesLetter[18]}/${dragon.bodyColors[0]}/${dragon.wingColor}.png`
+    const hornTexture = `${S3_BASE_URL}/${genesLetter[13]}${genesLetter[14]}${genesLetter[15]}/${dragon.hornColor}/${DEFAULT_RESOULTION}.png`
+    const backTexture = `${S3_BASE_URL}/${genesLetter[13]}${genesLetter[14]}${genesLetter[15]}/${dragon.backColor}/${DEFAULT_RESOULTION}.png`
+    const wingTexture = `${S3_BASE_URL}/${genesLetter[16]}${genesLetter[17]}${genesLetter[18]}/${dragon.bodyColors[0]}/${dragon.wingColor}/${DEFAULT_RESOULTION}.png`
 
     let hornType = 0
     const hornGene1 = dragon.genes[10]

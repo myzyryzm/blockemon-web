@@ -21,8 +21,6 @@ export function verifyMessage(
     const openedMessage = uint8ToString(
         tweetnacl_1.sign.open(signedMsgArray, decodedPublic)
     )
-    console.log('other', tweetnacl_1.sign.open(signedMsgArray, decodedPublic))
-    console.log('signedMsgArray', signedMsgArray)
-    console.log('openedMessage', openedMessage)
+
     return message === openedMessage
 }
