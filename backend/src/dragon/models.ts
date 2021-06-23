@@ -11,10 +11,14 @@ interface IDragon {
     baseDefense: number
     baseHealth: number
     bodyColors: number[]
+    bodyColor: number
+    bellyColor: number
+    markingsColor: number
     wingColor: number
     hornColor: number
     backColor: number
     toothColor: number
+    price?: string
 }
 
 interface IDragonResponse {
@@ -30,6 +34,7 @@ interface IDragonResponse {
     backTexture: string
     hornTexture: string
     hornType: number
+    price: string
 }
 
 export { IDragon, IDragonResponse }

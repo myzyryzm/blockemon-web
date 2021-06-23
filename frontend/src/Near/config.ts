@@ -1,7 +1,7 @@
 /** @format */
 
 import { IConfig } from './commonRequirements'
-const devContract = 'dev-1616732136326-5923628'
+const devContract = 'dev-1623375596557-29073322116606'
 const prodContract = ''
 
 export default function getConfig(): IConfig {
@@ -11,27 +11,18 @@ export default function getConfig(): IConfig {
         walletUrl: 'https://wallet.testnet.near.org',
         helperUrl: 'https://helper.testnet.near.org',
         contractName: devContract,
-    }
-    // @ts-ignore
-    if (process.env.REACT_APP_ENV !== undefined) {
-        config = {
-            ...config,
-            GAS: '200000000000000',
-            contractMethods: {
-                changeMethods: [
-                    'createPokemon',
-                    'deletePokemon',
-                    'transferPokemon',
-                    'healPokemon',
-                    'trainPokemon',
-                ],
-                viewMethods: [
-                    'getPokemonByOwner',
-                    'getPokemonById',
-                    'getAllPokemon',
-                ],
-            },
-        }
+        GAS: '200000000000000',
+        contractMethods: {
+            changeMethods: [
+                'breedDragons',
+                'getDragonsForOwner',
+                'addDragonToMarket',
+                'removeDragonFromMarket',
+                'buyDragon',
+                'getCEO',
+            ],
+            viewMethods: ['getDragonsOnMarket', 'getNumberOfDragonsOnMarket'],
+        },
     }
     // @ts-ignore
     if (process.env.REACT_APP_ENV === 'prod') {

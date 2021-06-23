@@ -4,11 +4,14 @@ import * as nearAPI from 'near-api-js'
 import getConfig from './config'
 
 const {
-    keyStores: { InMemoryKeyStore },
+    keyStores,
     Near,
     Account,
     Contract,
     KeyPair,
+    utils,
+    connect,
+    providers,
 } = nearAPI
 
 const config = getConfig()
@@ -24,7 +27,7 @@ const credentials = JSON.parse(
     )
 )
 
-const keyStore = new InMemoryKeyStore()
+const keyStore = new keyStores.InMemoryKeyStore()
 keyStore.setKey(
     networkId,
     contractName,
@@ -39,4 +42,15 @@ const { connection } = near
 const contractAccount = new Account(connection, contractName)
 const contract = new Contract(contractAccount, contractName, contractMethods)
 
-export { keyStore, near, connection, contractAccount, contract, config }
+export {
+    keyStore,
+    keyStores,
+    near,
+    connection,
+    contractAccount,
+    contract,
+    config,
+    utils,
+    connect,
+    providers,
+}

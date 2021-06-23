@@ -2,9 +2,20 @@
 
 import express from 'express'
 import { check } from 'express-validator'
-import { breedDragons, getDragons } from './controller'
+import {
+    addDragonToMarket,
+    addDragonToMarketTest,
+    breedDragons,
+    breedDragonTxHash,
+    getDragonById,
+    getDragonIdsForOwner,
+    getDragons,
+    getDragonsOnMarket,
+} from './controller'
 
 const router = express.Router()
+
+router.get('', getDragonById)
 
 router.post(
     '',
@@ -37,6 +48,9 @@ router.post(
         check('publicKey')
             .not()
             .isEmpty(),
+        check('privateKey')
+            .not()
+            .isEmpty(),
         check('accountId')
             .not()
             .isEmpty(),
@@ -49,5 +63,49 @@ router.post(
     ],
     breedDragons
 )
+
+router.post(
+    '/breed-tx-hash',
+    [
+        check('privateKey')
+            .not()
+            .isEmpty(),
+        check('accountId')
+            .not()
+            .isEmpty(),
+        check('dragon1Id')
+            .not()
+            .isEmpty(),
+        check('dragon2Id')
+            .not()
+            .isEmpty(),
+    ],
+    breedDragonTxHash
+)
+
+router.post(
+    '/add-to-market',
+    [
+        check('privateKey')
+            .not()
+            .isEmpty(),
+        check('accountId')
+            .not()
+            .isEmpty(),
+        check('dragonId')
+            .not()
+            .isEmpty(),
+        check('price')
+            .not()
+            .isEmpty(),
+    ],
+    addDragonToMarket
+)
+
+router.get('/market', getDragonsOnMarket)
+
+router.post('/add-to-market-test', addDragonToMarketTest)
+
+router.get('/ids', getDragonIdsForOwner)
 
 export default router

@@ -17,8 +17,21 @@ export default function getConfig(): IConfig {
             ...config,
             GAS: '200000000000000',
             contractMethods: {
-                changeMethods: ['breedDragons', 'getDragonsForOwner'],
-                viewMethods: [],
+                changeMethods: [
+                    'breedDragons',
+                    'getDragonsForOwner',
+                    'addDragonToMarket',
+                    'removeDragonFromMarket',
+                    'buyDragon',
+                    'getCEO',
+                    'getNumberOfDragonsForOwner',
+                    'getDragonIdsForOwner',
+                    'getDragonById',
+                ],
+                viewMethods: [
+                    'getDragonsOnMarket',
+                    'getNumberOfDragonsOnMarket',
+                ],
             },
         }
     }

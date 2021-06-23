@@ -2,7 +2,7 @@
 
 import {
     DEFAULT_RESOULTION,
-    NUMBER_2_LETTER_OFFSET,
+    NUMBER_TO_LETTER_OFFSET,
     S3_BASE_URL,
 } from '../common/constants'
 import { IDragon, IDragonResponse } from './models'
@@ -14,6 +14,8 @@ import { IDragon, IDragonResponse } from './models'
 // hornStyle (8) => NOP (NOP => solid; nOP => striped; NoP => alt1; noP => alt2; NOp => alt3; nOp => alt4; Nop => alt5; nop => alt6)
 // wingStyle (8) => QRS (QRS => 1 color; qRS => 2 color; QrS => alt1; qrS => alt2; QRs => alt3; qRs => alt4; Qrs => alt5; qrs => alt6)
 // TUVWX => tbd (just use them as fillers for rn)
+// T <-> X => moves?
+// fireBreath, fireBall, headbutt, sky attack, bite
 
 export function getDragonPayload(dragon: IDragon): IDragonResponse {
     const hasBelly = dragon.genes[3] === 0
@@ -22,7 +24,7 @@ export function getDragonPayload(dragon: IDragon): IDragonResponse {
     const genesLetter: string[] = []
     for (let i = 0; i < numGenes; i++) {
         const gene = dragon.genes[i]
-        const letter = String.fromCharCode(NUMBER_2_LETTER_OFFSET + i)
+        const letter = String.fromCharCode(NUMBER_TO_LETTER_OFFSET + i)
         genesLetter.push(
             gene === 0
                 ? `${letter.toLowerCase()}${letter.toLowerCase()}`
@@ -35,19 +37,27 @@ export function getDragonPayload(dragon: IDragon): IDragonResponse {
     let markingsPath = `${genesLetter[6]}${genesLetter[7]}${genesLetter[8]}${genesLetter[9]}`
     markingsPath = hasMarkings ? markingsPath : markingsPath.toUpperCase()
     let finalPath = ''
+
+    // let bodyColor = dragon.bodyColors[0]
+    const bodyColor = dragon.bodyColor
+    // let bellyColor = dragon.bodyColors[1]
+    const bellyColor = dragon.bellyColor
+    // let markingsColor = dragon.bodyColors[2]
+    const markingsColor = dragon.markingsColor
+
     if (hasBelly && hasMarkings) {
-        finalPath = `${dragon.bodyColors[0]}/${dragon.bodyColors[1]}/${dragon.bodyColors[2]}/${DEFAULT_RESOULTION}.png`
+        finalPath = `${bodyColor}/${bellyColor}/${markingsColor}/${DEFAULT_RESOULTION}.png`
     } else if (hasBelly) {
-        finalPath = `${dragon.bodyColors[0]}/${dragon.bodyColors[1]}/none/${DEFAULT_RESOULTION}.png`
+        finalPath = `${bodyColor}/${bellyColor}/none/${DEFAULT_RESOULTION}.png`
     } else if (hasMarkings) {
-        finalPath = `${dragon.bodyColors[0]}/none/${dragon.bodyColors[2]}/${DEFAULT_RESOULTION}.png`
+        finalPath = `${bodyColor}/none/${markingsColor}/${DEFAULT_RESOULTION}.png`
     } else {
-        finalPath = `${dragon.bodyColors[0]}/none/none/${DEFAULT_RESOULTION}.png`
+        finalPath = `${bodyColor}/none/none/${DEFAULT_RESOULTION}.png`
     }
     const bodyTexture = `${S3_BASE_URL}/${bodyPath}/${bellyPath}/${markingsPath}/${finalPath}`
     const hornTexture = `${S3_BASE_URL}/${genesLetter[13]}${genesLetter[14]}${genesLetter[15]}/${dragon.hornColor}/${DEFAULT_RESOULTION}.png`
     const backTexture = `${S3_BASE_URL}/${genesLetter[13]}${genesLetter[14]}${genesLetter[15]}/${dragon.backColor}/${DEFAULT_RESOULTION}.png`
-    const wingTexture = `${S3_BASE_URL}/${genesLetter[16]}${genesLetter[17]}${genesLetter[18]}/${dragon.bodyColors[0]}/${dragon.wingColor}/${DEFAULT_RESOULTION}.png`
+    const wingTexture = `${S3_BASE_URL}/${genesLetter[16]}${genesLetter[17]}${genesLetter[18]}/${bodyColor}/${dragon.wingColor}/${DEFAULT_RESOULTION}.png`
 
     let hornType = 0
     const hornGene1 = dragon.genes[10]
@@ -96,5 +106,6 @@ export function getDragonPayload(dragon: IDragon): IDragonResponse {
         wingTexture,
         hornTexture,
         hornType,
+        price: dragon.price ? dragon.price : '0',
     }
 }
