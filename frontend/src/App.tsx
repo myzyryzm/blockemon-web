@@ -35,7 +35,7 @@ export default function App() {
             <Modal
                 open={modalOpen}
                 close={() => {
-                    setModalOpen(true)
+                    setModalOpen(false)
                 }}
             />
             <WebGL />

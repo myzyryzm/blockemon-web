@@ -1,27 +1,29 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WalletAccount = exports.WalletConnection = void 0;
-const account_1 = require("./account");
-const transaction_1 = require("./transaction");
-const utils_1 = require("./utils");
-const borsh_1 = require("borsh");
-const borsh_2 = require("borsh");
-const LOGIN_WALLET_URL_SUFFIX = '/login/';
-const MULTISIG_HAS_METHOD = 'add_request_and_confirm';
-const LOCAL_STORAGE_KEY_SUFFIX = '_wallet_auth_key';
-const PENDING_ACCESS_KEY_PREFIX = 'pending_key'; // browser storage key for a pending access key (i.e. key has been generated but we are not sure it was added yet)
+/** @format */
+
+'use strict'
+Object.defineProperty(exports, '__esModule', { value: true })
+exports.WalletAccount = exports.WalletConnection = void 0
+const account_1 = require('./account')
+const transaction_1 = require('./transaction')
+const utils_1 = require('./utils')
+const borsh_1 = require('borsh')
+const borsh_2 = require('borsh')
+const LOGIN_WALLET_URL_SUFFIX = '/login/'
+const MULTISIG_HAS_METHOD = 'add_request_and_confirm'
+const LOCAL_STORAGE_KEY_SUFFIX = '_wallet_auth_key'
+const PENDING_ACCESS_KEY_PREFIX = 'pending_key' // browser storage key for a pending access key (i.e. key has been generated but we are not sure it was added yet)
 class WalletConnection {
     constructor(near, appKeyPrefix, authData) {
-        this._near = near;
-        const authDataKey = appKeyPrefix + LOCAL_STORAGE_KEY_SUFFIX;
+        this._near = near
+        const authDataKey = appKeyPrefix + LOCAL_STORAGE_KEY_SUFFIX
         // const authData = JSON.parse(window.localStorage.getItem(authDataKey));
-        this._networkId = near.config.networkId;
-        this._walletBaseUrl = near.config.walletUrl;
-        appKeyPrefix = appKeyPrefix || near.config.contractName || 'default';
-        this._keyStore = near.connection.signer.keyStore;
-        this._authData = authData || { allKeys: [] };
+        this._networkId = near.config.networkId
+        this._walletBaseUrl = near.config.walletUrl
+        appKeyPrefix = appKeyPrefix || near.config.contractName || 'default'
+        this._keyStore = near.connection.signer.keyStore
+        this._authData = authData || { allKeys: [] }
         console.log(this._authData)
-        this._authDataKey = authDataKey;
+        this._authDataKey = authDataKey
         // if (!this.isSignedIn()) {
         //     this._completeSignInWithAccessKey();
         // }
@@ -32,7 +34,7 @@ class WalletConnection {
      * walletAccount.isSignedIn();
      */
     isSignedIn() {
-        return !!this._authData.accountId;
+        return !!this._authData.accountId
     }
     /**
      * Returns authorized Account ID.
@@ -40,7 +42,7 @@ class WalletConnection {
      * walletAccount.getAccountId();
      */
     getAccountId() {
-        return this._authData.accountId || '';
+        return this._authData.accountId || ''
     }
     /**
      * Redirects current page to the wallet authentication page.
@@ -57,20 +59,30 @@ class WalletConnection {
      *     "https://example.com/error.html");
      */
     async requestSignIn(contractId, title, successUrl, failureUrl) {
-        if (this.getAccountId() || await this._keyStore.getKey(this._networkId, this.getAccountId())) {
-            return Promise.resolve();
+        if (
+            this.getAccountId() ||
+            (await this._keyStore.getKey(this._networkId, this.getAccountId()))
+        ) {
+            return Promise.resolve()
         }
-        const currentUrl = new URL(window.location.href);
-        const newUrl = new URL(this._walletBaseUrl + LOGIN_WALLET_URL_SUFFIX);
-        newUrl.searchParams.set('title', title);
-        newUrl.searchParams.set('contract_id', contractId);
-        newUrl.searchParams.set('success_url', successUrl || currentUrl.href);
-        newUrl.searchParams.set('failure_url', failureUrl || currentUrl.href);
-        newUrl.searchParams.set('app_url', currentUrl.origin);
-        const accessKey = utils_1.KeyPair.fromRandom('ed25519');
-        newUrl.searchParams.set('public_key', accessKey.getPublicKey().toString());
-        await this._keyStore.setKey(this._networkId, PENDING_ACCESS_KEY_PREFIX + accessKey.getPublicKey(), accessKey);
-        window.location.assign(newUrl.toString());
+        const currentUrl = new URL(window.location.href)
+        const newUrl = new URL(this._walletBaseUrl + LOGIN_WALLET_URL_SUFFIX)
+        newUrl.searchParams.set('title', title)
+        newUrl.searchParams.set('contract_id', contractId)
+        newUrl.searchParams.set('success_url', successUrl || currentUrl.href)
+        newUrl.searchParams.set('failure_url', failureUrl || currentUrl.href)
+        newUrl.searchParams.set('app_url', currentUrl.origin)
+        const accessKey = utils_1.KeyPair.fromRandom('ed25519')
+        newUrl.searchParams.set(
+            'public_key',
+            accessKey.getPublicKey().toString()
+        )
+        await this._keyStore.setKey(
+            this._networkId,
+            PENDING_ACCESS_KEY_PREFIX + accessKey.getPublicKey(),
+            accessKey
+        )
+        window.location.assign(newUrl.toString())
     }
     /**
      * Requests the user to quickly sign for a transaction or batch of transactions
@@ -78,37 +90,46 @@ class WalletConnection {
      * @param callbackUrl The url to navigate to after the user is prompted to sign
      */
     async requestSignTransactions(transactions, callbackUrl) {
-        const currentUrl = new URL(window.location.href);
-        const newUrl = new URL('sign', this._walletBaseUrl);
-        newUrl.searchParams.set('transactions', transactions
-            .map(transaction => borsh_2.serialize(transaction_1.SCHEMA, transaction))
-            .map(serialized => Buffer.from(serialized).toString('base64'))
-            .join(','));
-        newUrl.searchParams.set('callbackUrl', callbackUrl || currentUrl.href);
-        // window.location.assign(newUrl.toString());
-        return newUrl.toString()
+        const currentUrl = new URL(window.location.href)
+        const newUrl = new URL('sign', this._walletBaseUrl)
+        newUrl.searchParams.set(
+            'transactions',
+            transactions
+                .map((transaction) =>
+                    borsh_2.serialize(transaction_1.SCHEMA, transaction)
+                )
+                .map((serialized) => Buffer.from(serialized).toString('base64'))
+                .join(',')
+        )
+        newUrl.searchParams.set('callbackUrl', callbackUrl || currentUrl.href)
+        window.location.assign(newUrl.toString())
     }
     /**
      * Complete sign in for a given account id and public key. To be invoked by the app when getting a callback from the wallet.
      */
     async _completeSignInWithAccessKey() {
-        const currentUrl = new URL(window.location.href);
-        const publicKey = currentUrl.searchParams.get('public_key') || '';
-        const allKeys = (currentUrl.searchParams.get('all_keys') || '').split(',');
-        const accountId = currentUrl.searchParams.get('account_id') || '';
+        const currentUrl = new URL(window.location.href)
+        const publicKey = currentUrl.searchParams.get('public_key') || ''
+        const allKeys = (currentUrl.searchParams.get('all_keys') || '').split(
+            ','
+        )
+        const accountId = currentUrl.searchParams.get('account_id') || ''
         // TODO: Handle situation when access key is not added
         if (accountId && publicKey) {
             this._authData = {
                 accountId,
-                allKeys
-            };
-            window.localStorage.setItem(this._authDataKey, JSON.stringify(this._authData));
-            await this._moveKeyFromTempToPermanent(accountId, publicKey);
+                allKeys,
+            }
+            window.localStorage.setItem(
+                this._authDataKey,
+                JSON.stringify(this._authData)
+            )
+            await this._moveKeyFromTempToPermanent(accountId, publicKey)
         }
-        currentUrl.searchParams.delete('public_key');
-        currentUrl.searchParams.delete('all_keys');
-        currentUrl.searchParams.delete('account_id');
-        window.history.replaceState({}, document.title, currentUrl.toString());
+        currentUrl.searchParams.delete('public_key')
+        currentUrl.searchParams.delete('all_keys')
+        currentUrl.searchParams.delete('account_id')
+        window.history.replaceState({}, document.title, currentUrl.toString())
     }
     /**
      *
@@ -116,9 +137,15 @@ class WalletConnection {
      * @param publicKey The public key being set to the key store
      */
     async _moveKeyFromTempToPermanent(accountId, publicKey) {
-        const keyPair = await this._keyStore.getKey(this._networkId, PENDING_ACCESS_KEY_PREFIX + publicKey);
-        await this._keyStore.setKey(this._networkId, accountId, keyPair);
-        await this._keyStore.removeKey(this._networkId, PENDING_ACCESS_KEY_PREFIX + publicKey);
+        const keyPair = await this._keyStore.getKey(
+            this._networkId,
+            PENDING_ACCESS_KEY_PREFIX + publicKey
+        )
+        await this._keyStore.setKey(this._networkId, accountId, keyPair)
+        await this._keyStore.removeKey(
+            this._networkId,
+            PENDING_ACCESS_KEY_PREFIX + publicKey
+        )
     }
     /**
      * Sign out from the current account
@@ -126,36 +153,49 @@ class WalletConnection {
      * walletAccount.signOut();
      */
     signOut() {
-        this._authData = {};
-        window.localStorage.removeItem(this._authDataKey);
+        this._authData = {}
+        window.localStorage.removeItem(this._authDataKey)
     }
     /**
      * Returns the current connected wallet account
      */
     account() {
         if (!this._connectedAccount) {
-            this._connectedAccount = new ConnectedWalletAccount(this, this._near.connection, this._authData.accountId);
+            this._connectedAccount = new ConnectedWalletAccount(
+                this,
+                this._near.connection,
+                this._authData.accountId
+            )
         }
-        return this._connectedAccount;
+        return this._connectedAccount
     }
 }
-exports.WalletConnection = WalletConnection;
-exports.WalletAccount = WalletConnection;
+exports.WalletConnection = WalletConnection
+exports.WalletAccount = WalletConnection
 /**
  * {@link Account} implementation which redirects to wallet using (@link WalletConnection) when no local key is available.
  */
 class ConnectedWalletAccount extends account_1.Account {
     constructor(walletConnection, connection, accountId) {
-        super(connection, accountId);
-        this.walletConnection = walletConnection;
+        super(connection, accountId)
+        this.walletConnection = walletConnection
     }
     // Overriding Account methods
     async signAndSendTransaction(receiverId, actions) {
-        await this.ready;
-        const localKey = await this.connection.signer.getPublicKey(this.accountId, this.connection.networkId);
-        let accessKey = await this.accessKeyForTransaction(receiverId, actions, localKey);
+        await this.ready
+        const localKey = await this.connection.signer.getPublicKey(
+            this.accountId,
+            this.connection.networkId
+        )
+        let accessKey = await this.accessKeyForTransaction(
+            receiverId,
+            actions,
+            localKey
+        )
         if (!accessKey) {
-            throw new Error(`Cannot find matching key for transaction sent to ${receiverId}`);
+            throw new Error(
+                `Cannot find matching key for transaction sent to ${receiverId}`
+            )
         }
         // if (localKey && localKey.toString() === accessKey.public_key) {
         //     try {
@@ -171,19 +211,33 @@ class ConnectedWalletAccount extends account_1.Account {
         //         }
         //     }
         // }
-        const block = await this.connection.provider.block({ finality: 'final' });
-        const blockHash = borsh_1.baseDecode(block.header.hash);
-        const publicKey = utils_1.PublicKey.from(accessKey.public_key);
+        const block = await this.connection.provider.block({
+            finality: 'final',
+        })
+        const blockHash = borsh_1.baseDecode(block.header.hash)
+        const publicKey = utils_1.PublicKey.from(accessKey.public_key)
         // TODO: Cache & listen for nonce updates for given access key
-        const nonce = accessKey.access_key.nonce + 1;
-        const transaction = transaction_1.createTransaction(this.accountId, publicKey, receiverId, nonce, actions, blockHash);
-        return Buffer.from(borsh_2.serialize(transaction_1.SCHEMA, transaction)).toString('base64')
-        await this.walletConnection.requestSignTransactions([transaction], window.location.href);
+        const nonce = accessKey.access_key.nonce + 1
+        const transaction = transaction_1.createTransaction(
+            this.accountId,
+            publicKey,
+            receiverId,
+            nonce,
+            actions,
+            blockHash
+        )
+        return Buffer.from(
+            borsh_2.serialize(transaction_1.SCHEMA, transaction)
+        ).toString('base64')
+        await this.walletConnection.requestSignTransactions(
+            [transaction],
+            window.location.href
+        )
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                reject(new Error('Failed to redirect to sign transaction'));
-            }, 1000);
-        });
+                reject(new Error('Failed to redirect to sign transaction'))
+            }, 1000)
+        })
         // TODO: Aggregate multiple transaction request with "debounce".
         // TODO: Introduce TrasactionQueue which also can be used to watch for status?
     }
@@ -194,32 +248,44 @@ class ConnectedWalletAccount extends account_1.Account {
      * @param actions The action(s) needed to be checked for access
      */
     async accessKeyMatchesTransaction(accessKey, receiverId, actions) {
-        const { access_key: { permission } } = accessKey;
+        const {
+            access_key: { permission },
+        } = accessKey
         if (permission === 'FullAccess') {
-            return true;
+            return true
         }
         if (permission.FunctionCall) {
-            const { receiver_id: allowedReceiverId, method_names: allowedMethods } = permission.FunctionCall;
+            const {
+                receiver_id: allowedReceiverId,
+                method_names: allowedMethods,
+            } = permission.FunctionCall
             /********************************
             Accept multisig access keys and let wallets attempt to signAndSendTransaction
             If an access key has itself as receiverId and method permission add_request_and_confirm, then it is being used in a wallet with multisig contract: https://github.com/near/core-contracts/blob/671c05f09abecabe7a7e58efe942550a35fc3292/multisig/src/lib.rs#L149-L153
             ********************************/
-            if (allowedReceiverId === this.accountId && allowedMethods.includes(MULTISIG_HAS_METHOD)) {
-                return true;
+            if (
+                allowedReceiverId === this.accountId &&
+                allowedMethods.includes(MULTISIG_HAS_METHOD)
+            ) {
+                return true
             }
             if (allowedReceiverId === receiverId) {
                 if (actions.length !== 1) {
-                    return false;
+                    return false
                 }
-                const [{ functionCall }] = actions;
-                return functionCall &&
-                    (!functionCall.deposit || functionCall.deposit.toString() === "0") && // TODO: Should support charging amount smaller than allowance?
-                    (allowedMethods.length === 0 || allowedMethods.includes(functionCall.methodName));
+                const [{ functionCall }] = actions
+                return (
+                    functionCall &&
+                    (!functionCall.deposit ||
+                        functionCall.deposit.toString() === '0') && // TODO: Should support charging amount smaller than allowance?
+                    (allowedMethods.length === 0 ||
+                        allowedMethods.includes(functionCall.methodName))
+                )
                 // TODO: Handle cases when allowance doesn't have enough to pay for gas
             }
         }
         // TODO: Support other permissions than FunctionCall
-        return false;
+        return false
     }
     /**
      * Helper function returning the access key (if it exists) to the receiver that grants the designated permission
@@ -229,20 +295,36 @@ class ConnectedWalletAccount extends account_1.Account {
      * @returns Promise<any>
      */
     async accessKeyForTransaction(receiverId, actions, localKey) {
-        const accessKeys = await this.getAccessKeys();
+        const accessKeys = await this.getAccessKeys()
         if (localKey) {
-            const accessKey = accessKeys.find(key => key.public_key === localKey.toString());
-            if (accessKey && await this.accessKeyMatchesTransaction(accessKey, receiverId, actions)) {
-                return accessKey;
+            const accessKey = accessKeys.find(
+                (key) => key.public_key === localKey.toString()
+            )
+            if (
+                accessKey &&
+                (await this.accessKeyMatchesTransaction(
+                    accessKey,
+                    receiverId,
+                    actions
+                ))
+            ) {
+                return accessKey
             }
         }
-        
-        const walletKeys = this.walletConnection._authData.allKeys;
+
+        const walletKeys = this.walletConnection._authData.allKeys
         for (const accessKey of accessKeys) {
-            if (walletKeys.indexOf(accessKey.public_key) !== -1 && await this.accessKeyMatchesTransaction(accessKey, receiverId, actions)) {
-                return accessKey;
+            if (
+                walletKeys.indexOf(accessKey.public_key) !== -1 &&
+                (await this.accessKeyMatchesTransaction(
+                    accessKey,
+                    receiverId,
+                    actions
+                ))
+            ) {
+                return accessKey
             }
         }
-        return null;
+        return null
     }
 }
