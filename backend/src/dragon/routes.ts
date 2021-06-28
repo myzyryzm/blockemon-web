@@ -7,6 +7,7 @@ import {
     addDragonToMarketTest,
     breedDragons,
     breedDragonTxHash,
+    buyDragonTxHash,
     getDragonById,
     getDragonIdsForOwner,
     getDragons,
@@ -81,6 +82,25 @@ router.post(
             .isEmpty(),
     ],
     breedDragonTxHash
+)
+
+router.post(
+    '/buy-tx-hash',
+    [
+        check('privateKey')
+            .not()
+            .isEmpty(),
+        check('accountId')
+            .not()
+            .isEmpty(),
+        check('id')
+            .not()
+            .isEmpty(),
+        check('dragon2Id')
+            .not()
+            .isEmpty(),
+    ],
+    buyDragonTxHash
 )
 
 router.post(
