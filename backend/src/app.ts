@@ -49,6 +49,7 @@ app.use((req, res, next) => {
 })
 
 app.use((error, req, res, next) => {
+    console.log('motherfucker just got tossed')
     if (res.headerSent) {
         return next(error)
     }

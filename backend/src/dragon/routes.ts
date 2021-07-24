@@ -4,7 +4,6 @@ import express from 'express'
 import { check } from 'express-validator'
 import {
     addDragonToMarket,
-    addDragonToMarketTest,
     breedDragons,
     breedDragonTxHash,
     buyDragonTxHash,
@@ -12,6 +11,7 @@ import {
     getDragonIdsForOwner,
     getDragons,
     getDragonsOnMarket,
+    removeDragonFromMarket,
 } from './controller'
 
 const router = express.Router()
@@ -122,9 +122,23 @@ router.post(
     addDragonToMarket
 )
 
-router.get('/market', getDragonsOnMarket)
+router.post(
+    '/remove-from-market',
+    [
+        check('privateKey')
+            .not()
+            .isEmpty(),
+        check('accountId')
+            .not()
+            .isEmpty(),
+        check('dragonId')
+            .not()
+            .isEmpty(),
+    ],
+    removeDragonFromMarket
+)
 
-router.post('/add-to-market-test', addDragonToMarketTest)
+router.get('/market', getDragonsOnMarket)
 
 router.get('/ids', getDragonIdsForOwner)
 

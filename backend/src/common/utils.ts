@@ -2,6 +2,7 @@
 
 import bs58 from 'bs58'
 import { Account, WalletAccount } from 'near-api-js'
+import { FinalExecutionOutcome } from 'near-api-js/lib/providers'
 import tweetnacl_1 from 'tweetnacl'
 import { utils, config, keyStores, connect, providers } from './near-contract'
 
@@ -71,25 +72,27 @@ export async function getWalletAccountByKey(accountId, privateKey, publicKey) {
 
 export async function call(accountId, privateKey, tokens, method, params) {
     const account: Account = await getAccountByKey(accountId, privateKey)
+    let functionCallResponse: FinalExecutionOutcome | undefined
     if (!tokens) {
-        return await account.functionCall(
+        functionCallResponse = await account.functionCall(
             config.contractName,
             method,
             params,
             // @ts-ignore
             config.GAS
         )
+    } else {
+        functionCallResponse = await account.functionCall(
+            config.contractName,
+            method,
+            params,
+            // @ts-ignore
+            config.GAS,
+            // @ts-ignore
+            utils.format.parseNearAmount(tokens)
+        )
     }
 
-    const functionCallResponse = await account.functionCall(
-        config.contractName,
-        method,
-        params,
-        // @ts-ignore
-        config.GAS,
-        // @ts-ignore
-        utils.format.parseNearAmount(tokens)
-    )
     const result = providers.getTransactionLastResult(functionCallResponse)
     return result
 }
