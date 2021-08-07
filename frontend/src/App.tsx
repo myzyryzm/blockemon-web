@@ -16,7 +16,7 @@ export default function App() {
 
     return (
         <NearContext.Provider value={near}>
-            <WebGL />
+            {/* <WebGL /> */}
             <Routes />
         </NearContext.Provider>
     )
