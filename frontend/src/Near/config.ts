@@ -1,7 +1,7 @@
 /** @format */
 
 import { IConfig } from './commonRequirements'
-const devContract = 'dev-1623375596557-29073322116606'
+const devContract = 'dev-1627145896878-80992661467411'
 const prodContract = ''
 
 export default function getConfig(): IConfig {
@@ -19,7 +19,6 @@ export default function getConfig(): IConfig {
                 'addDragonToMarket',
                 'removeDragonFromMarket',
                 'buyDragon',
-                'getCEO',
             ],
             viewMethods: ['getDragonsOnMarket', 'getNumberOfDragonsOnMarket'],
         },
