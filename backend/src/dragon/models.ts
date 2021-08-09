@@ -11,19 +11,14 @@ interface IDragon {
     baseDefense: number
     baseHealth: number
 
-    bodyColor: number
-    wingColor: number
-    hornColor: number
-    backColor: number
-    toothColor: number
-    eyeColor: number
+    primaryColor: number
+    secondaryColor: number
 
     bodyGenes: number[]
     wingGenes: number[]
     hornGenes: number[]
-    backGenes: number[]
     hornTypeGenes: number[]
-    extraGenes: number[]
+    moveGenes: number[]
 
     bodyTexture: string
     wingTexture: string
@@ -31,23 +26,12 @@ interface IDragon {
     hornTexture: string
     hornType: number
 
-    price?: string
-}
+    bodyGenesSequence: string
+    wingGenesSequence: string
+    hornGenesSequence: string
+    moveGenesSequence: string
 
-interface IDragonResponse {
-    id: string
-    owner: string
-    genes: number[]
-    baseSpeed: number
-    baseAttack: number
-    baseDefense: number
-    baseHealth: number
-    bodyTexture: string
-    wingTexture: string
-    backTexture: string
-    hornTexture: string
-    hornType: number
     price: string
 }
 
-export { IDragon, IDragonResponse }
+export { IDragon }

@@ -37,6 +37,7 @@ export default function Transactions({
                     setSuccessModalOpen(false)
                 }}
                 type='success'
+                game='breeding'
             />
             <Modal
                 open={failModalOpen}
@@ -44,6 +45,7 @@ export default function Transactions({
                     setFailModalOpen(false)
                 }}
                 type='fail'
+                game='breeding'
             />
         </div>
     )

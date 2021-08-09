@@ -1,12 +1,12 @@
 /** @format */
 
-import Breed from 'Breed/Breed'
 import EndlessRunner from 'EndlessRunner/EndlessRunner'
 import Home from 'Home/Home'
 import NearContext from 'Near/NearContext'
 import React, { useContext } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Transactions from 'Transactions/Transactions'
+import WebGL from 'WebGL/WebGL'
 
 export default function Routes(): JSX.Element {
     const { transactionStatus } = useContext(NearContext)
@@ -16,7 +16,7 @@ export default function Routes(): JSX.Element {
     }
 
     function renderBreed(): JSX.Element {
-        return <Breed />
+        return <WebGL />
     }
 
     function renderEndlessRunner(): JSX.Element {
@@ -37,21 +37,18 @@ export default function Routes(): JSX.Element {
                 }}
             />
             <Route
-                exact
                 path='/breed'
                 render={() => {
                     return renderBreed()
                 }}
             />
             <Route
-                exact
                 path='/endless-runner'
                 render={() => {
                     return renderEndlessRunner()
                 }}
             />
             <Route
-                exact
                 path='/transactions'
                 render={() => {
                     return renderTransactions()

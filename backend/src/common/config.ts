@@ -11,28 +11,23 @@ export default function getConfig(): IConfig {
         walletUrl: 'https://wallet.testnet.near.org',
         helperUrl: 'https://helper.testnet.near.org',
         contractName: devContract,
-    }
-    if (process.env.NODE_ENV !== undefined) {
-        config = {
-            ...config,
-            GAS: '200000000000000',
-            contractMethods: {
-                changeMethods: [
-                    'breedDragons',
-                    'getDragonsForOwner',
-                    'addDragonToMarket',
-                    'removeDragonFromMarket',
-                    'buyDragon',
-                    'getDragonById',
-                ],
-                viewMethods: [
-                    'getDragonsOnMarket',
-                    'getNumberOfDragonsOnMarket',
-                    'getNumberOfDragonsForOwner',
-                    'getDragonIdsForOwner',
-                ],
-            },
-        }
+        GAS: '200000000000000',
+        contractMethods: {
+            changeMethods: [
+                'breedDragons',
+                'getDragonsForOwner',
+                'addDragonToMarket',
+                'removeDragonFromMarket',
+                'buyDragon',
+                'getDragonById',
+            ],
+            viewMethods: [
+                'getDragonsOnMarket',
+                'getNumberOfDragonsOnMarket',
+                'getNumberOfDragonsForOwner',
+                'getDragonIdsForOwner',
+            ],
+        },
     }
     // @ts-ignore
     if (process.env.NODE_ENV === 'prod') {

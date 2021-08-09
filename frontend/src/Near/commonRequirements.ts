@@ -1,7 +1,6 @@
 /** @format */
 
 import { Account, Contract, Near, WalletConnection } from 'near-api-js'
-import { FinalExecutionOutcome } from 'near-api-js/lib/providers'
 
 export interface IConfig {
     networkId: string // default | mainnet

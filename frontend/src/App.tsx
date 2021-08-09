@@ -1,11 +1,10 @@
 /** @format */
 
-import React, { useEffect, useState } from 'react'
-import './App.css'
+import React from 'react'
 import NearContext from 'Near/NearContext'
 import useNear from 'Near/useNear'
-import WebGL from 'WebGL/WebGL'
 import Routes from 'Routes'
+import { BrowserRouter } from 'react-router-dom'
 
 export default function App() {
     const near = useNear()
@@ -15,9 +14,10 @@ export default function App() {
     // const accountId = currentUrl.searchParams.get('account_id') || ''
 
     return (
-        <NearContext.Provider value={near}>
-            {/* <WebGL /> */}
-            <Routes />
-        </NearContext.Provider>
+        <BrowserRouter>
+            <NearContext.Provider value={near}>
+                <Routes />
+            </NearContext.Provider>
+        </BrowserRouter>
     )
 }

@@ -25,6 +25,8 @@ export default function EndlessRunner() {
         return <LoginFail />
     }
 
+    function renderTransactions() {}
+
     return (
         <Switch>
             <Route

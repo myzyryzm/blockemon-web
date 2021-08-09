@@ -5,7 +5,7 @@ import {
     NUMBER_TO_LETTER_OFFSET,
     S3_BASE_URL,
 } from '../common/constants'
-import { IDragon, IDragonResponse } from './models'
+import { IDragon } from './models'
 
 // bodyBase (8) => ABC (ABC => scales; aBC => no scales; AbC => alt1; abC => alt2; ABc => alt3; aBc => alt4; Abc => alt5; abc => alt6)
 // bodyUnder (5) => DEF (D => no belly; dEF => belly; deF => alt1; dEf => alt2;  def => alt3)

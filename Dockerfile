@@ -8,7 +8,8 @@ RUN apt-get install -y nodejs build-essential
 
 COPY backend /home/backend
 COPY build /home/build
-COPY custom /home/custom
+ADD webGL /home/build/static
+COPY credentials /home/credentials
 COPY moveFiles.js /home/moveFiles.js
 COPY startup.sh /home/startup.sh
 

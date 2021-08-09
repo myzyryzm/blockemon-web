@@ -9,6 +9,7 @@ Dockerrun.aws.json
 logs
 misc
 static
+credentials
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

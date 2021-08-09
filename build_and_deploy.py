@@ -202,7 +202,7 @@ if os.path.isfile(env_file) is False:
     
 try:
     envs = get_envs(env_file)
-    cmd = ['sh', '/home/startup.sh', deploy_url]
+    cmd = ['sh', '/home/startup.sh']
     deploy_json['containerDefinitions'][0]['image'] = nginx_image
     deploy_json['containerDefinitions'][1]['command'] = cmd
     deploy_json['containerDefinitions'][1]['image'] = docker_image

@@ -18,5 +18,9 @@ export default function WebGL() {
         })
     }, [])
 
-    return <Unity unityContent={unityContext} />
+    return (
+        <div style={{ height: '100vh', width: '100vw' }}>
+            <Unity unityContent={unityContext} />
+        </div>
+    )
 }

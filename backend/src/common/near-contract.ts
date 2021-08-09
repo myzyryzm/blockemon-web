@@ -16,15 +16,15 @@ const {
 
 const config = getConfig()
 const { nodeUrl, networkId, contractName, contractMethods } = config
-
+console.log('contractName', contractName)
+let credentialsPath =
+    process.env.HOME + '/.near-credentials/testnet/' + contractName + '.json'
+if (process.env.CREDENTIALS_PATH) {
+    credentialsPath = process.env.CREDENTIALS_PATH
+}
 const credentials = JSON.parse(
     // @ts-ignore
-    fs.readFileSync(
-        process.env.HOME +
-            '/.near-credentials/testnet/' +
-            contractName +
-            '.json'
-    )
+    fs.readFileSync(credentialsPath)
 )
 
 const keyStore = new keyStores.InMemoryKeyStore()
