@@ -6,11 +6,6 @@ interface IDragon {
     parent1: number
     parent2: number
 
-    baseSpeed: number
-    baseAttack: number
-    baseDefense: number
-    baseHealth: number
-
     primaryColor: number
     secondaryColor: number
 
