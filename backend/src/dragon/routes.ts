@@ -4,13 +4,13 @@ import express from 'express'
 import { check } from 'express-validator'
 import {
     addDragonToMarket,
-    breedDragons,
     breedDragonTxHash,
     buyDragonTxHash,
     getDragonById,
     getDragonIdsForOwner,
     getDragons,
     getDragonsOnMarket,
+    queryMarketDragons,
     removeDragonFromMarket,
 } from './controller'
 
@@ -21,48 +21,11 @@ router.get('', getDragonById)
 router.post(
     '',
     [
-        check('message')
-            .not()
-            .isEmpty(),
-        check('signedMessage')
-            .not()
-            .isEmpty(),
-        check('publicKey')
-            .not()
-            .isEmpty(),
         check('accountId')
             .not()
             .isEmpty(),
     ],
     getDragons
-)
-
-router.post(
-    '/breed',
-    [
-        check('message')
-            .not()
-            .isEmpty(),
-        check('signedMessage')
-            .not()
-            .isEmpty(),
-        check('publicKey')
-            .not()
-            .isEmpty(),
-        check('privateKey')
-            .not()
-            .isEmpty(),
-        check('accountId')
-            .not()
-            .isEmpty(),
-        check('dragon1Id')
-            .not()
-            .isEmpty(),
-        check('dragon2Id')
-            .not()
-            .isEmpty(),
-    ],
-    breedDragons
 )
 
 router.post(
@@ -112,7 +75,7 @@ router.post(
         check('accountId')
             .not()
             .isEmpty(),
-        check('dragonId')
+        check('id')
             .not()
             .isEmpty(),
         check('price')
@@ -131,7 +94,7 @@ router.post(
         check('accountId')
             .not()
             .isEmpty(),
-        check('dragonId')
+        check('id')
             .not()
             .isEmpty(),
     ],
@@ -141,5 +104,7 @@ router.post(
 router.get('/market', getDragonsOnMarket)
 
 router.get('/ids', getDragonIdsForOwner)
+
+router.get('/market-query', queryMarketDragons)
 
 export default router

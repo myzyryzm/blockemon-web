@@ -15,13 +15,13 @@ export default function getConfig(): IConfig {
         contractMethods: {
             changeMethods: [
                 'breedDragons',
-                'getDragonsForOwner',
                 'addDragonToMarket',
                 'removeDragonFromMarket',
                 'buyDragon',
-                'getDragonById',
             ],
             viewMethods: [
+                'getDragonsForOwner',
+                'getDragonById',
                 'getDragonsOnMarket',
                 'getNumberOfDragonsOnMarket',
                 'getNumberOfDragonsForOwner',
@@ -30,16 +30,16 @@ export default function getConfig(): IConfig {
         },
     }
     // @ts-ignore
-    if (process.env.NODE_ENV === 'prod') {
-        config = {
-            ...config,
-            networkId: 'mainnet',
-            nodeUrl: 'https://rpc.mainnet.near.org',
-            walletUrl: 'https://wallet.near.org',
-            helperUrl: 'https://helper.mainnet.near.org',
-            contractName: prodContract,
-        }
-    }
+    // if (process.env.NODE_ENV === 'prod') {
+    //     config = {
+    //         ...config,
+    //         networkId: 'mainnet',
+    //         nodeUrl: 'https://rpc.mainnet.near.org',
+    //         walletUrl: 'https://wallet.near.org',
+    //         helperUrl: 'https://helper.mainnet.near.org',
+    //         contractName: prodContract,
+    //     }
+    // }
 
     return config
 }

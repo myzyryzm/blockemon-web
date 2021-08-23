@@ -11,7 +11,8 @@ import path from 'path'
 import HttpError from './common/http-error'
 
 // todo: turn this into an environment variable
-const mongoUrl = process.env.MONGO_URL
+const mongoUrl =
+    'mongodb+srv://nearlythere:Hilbil1313@cluster0.a4gtv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 const app = express()
 const port = 8080 // default port to listen
@@ -56,17 +57,17 @@ app.use((error, req, res, next) => {
     res.status(500)
     res.json({ message: error.message || 'An unknown error occurred!' })
 })
-app.listen(port, () => {
-    console.log(`server started at http://localhost:${port}`)
-})
-// mongoose
-//     .connect(mongoUrl)
-//     .then(() => {
-//         // start the Express server
-//         app.listen(port, () => {
-//             console.log(`server started at http://localhost:${port}`)
-//         })
-//     })
-//     .catch((e) => {
-//         console.log(e)
-//     })
+// app.listen(port, () => {
+//     console.log(`server started at http://localhost:${port}`)
+// })
+mongoose
+    .connect(mongoUrl)
+    .then(() => {
+        // start the Express server
+        app.listen(port, () => {
+            console.log(`server started at http://localhost:${port}`)
+        })
+    })
+    .catch((e) => {
+        console.log(e)
+    })
