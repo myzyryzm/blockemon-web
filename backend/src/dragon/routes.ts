@@ -12,6 +12,7 @@ import {
     getDragonsOnMarket,
     queryMarketDragons,
     removeDragonFromMarket,
+    seedDatabase,
 } from './controller'
 
 const router = express.Router()
@@ -100,6 +101,8 @@ router.post(
     ],
     removeDragonFromMarket
 )
+
+router.post('/seed-database', seedDatabase)
 
 router.get('/market', getDragonsOnMarket)
 

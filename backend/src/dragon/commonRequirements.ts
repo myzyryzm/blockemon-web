@@ -1,9 +1,5 @@
 /** @format */
 
-export interface IMarketDragonResponse extends IMarketDragon {
-    oldPrice: string
-}
-
 export interface IMarketDragon {
     id: string
     owner: string
@@ -13,8 +9,18 @@ export interface IMarketDragon {
     wingGenes: string
     hornGenes: string
     hornType: string
-    price: string
-    media: string
+    price: number
+}
+
+export interface IDragonResponse {
+    id: string
+    owner: string
+    parent1: number
+    parent2: number
+    genes: number[]
+    colors: number[]
+    price: string | null
+    oldPrice: string | null
 }
 
 export interface IDragon {
@@ -36,7 +42,7 @@ export interface IDragon {
     wingTexture: string
     backTexture: string
     hornTexture: string
-    hornType: number
+    hornType: number | string
 
     bodyGenesSequence: string
     wingGenesSequence: string
@@ -46,12 +52,6 @@ export interface IDragon {
     price: string
 
     media: string
-    media_hash: string
-}
-
-export interface IFilter {
-    lookupType: string
-    lookupValue?: string
 }
 
 export interface IMarketFilter {
@@ -61,4 +61,13 @@ export interface IMarketFilter {
     secondaryColor: string
     hornGenes: string
     hornType: string
+    chunk?: number
+}
+
+export interface IMarketFilterVersion extends IMarketFilter {
+    numberOfEntries: number
+}
+
+export interface IMarketFilterVersionMap {
+    [key: string]: IMarketFilterVersion
 }

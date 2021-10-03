@@ -15,25 +15,28 @@ export default function getConfig(): IConfig {
         contractMethods: {
             changeMethods: [
                 'breedDragons',
-                'getDragonsForOwner',
                 'addDragonToMarket',
                 'removeDragonFromMarket',
                 'buyDragon',
             ],
-            viewMethods: ['getDragonsOnMarket', 'getNumberOfDragonsOnMarket'],
+            viewMethods: [
+                'getDragonsForOwner',
+                'getDragonsOnMarket',
+                'getNumberOfDragonsOnMarket',
+            ],
         },
     }
     // @ts-ignore
-    if (process.env.REACT_APP_ENV === 'prod') {
-        config = {
-            ...config,
-            networkId: 'mainnet',
-            nodeUrl: 'https://rpc.mainnet.near.org',
-            walletUrl: 'https://wallet.near.org',
-            helperUrl: 'https://helper.mainnet.near.org',
-            contractName: prodContract,
-        }
-    }
+    // if (process.env.REACT_APP_ENV === 'prod') {
+    //     config = {
+    //         ...config,
+    //         networkId: 'mainnet',
+    //         nodeUrl: 'https://rpc.mainnet.near.org',
+    //         walletUrl: 'https://wallet.near.org',
+    //         helperUrl: 'https://helper.mainnet.near.org',
+    //         contractName: prodContract,
+    //     }
+    // }
 
     return config
 }

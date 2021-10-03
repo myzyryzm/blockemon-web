@@ -10,20 +10,18 @@ import { config, contract } from '../common/near-contract'
 import { MAIN_LOOKUP_TYPES } from './constants'
 import {
     IDragon,
-    IFilter,
+    IDragonResponse,
     IMarketDragon,
-    IMarketDragonResponse,
     IMarketFilter,
 } from './commonRequirements'
 import {
-    modifyMarket,
     getMarketDragonResponse,
-    getFilteredDragonIds,
-    getOverlappingIds,
     modifyDragonMarket,
     getMarketFilter,
     transformMarketFilter,
     getFilteredDragons,
+    transformDragonResponse,
+    _seedDatabase,
 } from './utils'
 
 export async function getDragons(req, res, next) {
@@ -32,9 +30,12 @@ export async function getDragons(req, res, next) {
     //     return next(new HttpError('Not signed', 403))
     // }
     // @ts-ignore
-    const dragons: IDragon[] = await contract.getDragonsForOwner({
+    const responses: IDragonResponse[] = await contract.getDragonsForOwner({
         owner: accountId,
     })
+    const dragons: IDragon[] = responses.map((res) =>
+        transformDragonResponse(res)
+    )
     // console.log('dragons', dragons)
     res.status(200).send({ dragons })
     // // todo: add checking of public key to see if user has access
@@ -46,44 +47,32 @@ export async function getDragons(req, res, next) {
 
 export async function getDragonById(req, res, next) {
     try {
-        // @ts-ignore
-        const dragon: IDragon = await contract.getDragonById({
-            id: parseInt(req.query.dragon_id),
-        })
-
-        res.status(200).send({ dragon })
+        if (req.query.account_id) {
+            // @ts-ignore
+            const dragonIds: number[] = await contract.getDragonIdsForOwner({
+                owner: req.query.account_id,
+            })
+            const dragons: IDragon[] = []
+            const numIds = dragonIds.length
+            for (let i = 0; i < numIds; i++) {
+                // @ts-ignore
+                const response: IDragonResponse = await contract.getDragonById({
+                    id: dragonIds[i],
+                })
+                dragons.push(transformDragonResponse(response))
+            }
+            res.status(200).send({ dragons })
+        } else {
+            // @ts-ignore
+            const response: IDragonResponse = await contract.getDragonById({
+                id: parseInt(req.query.dragon_id),
+            })
+            res.status(200).send({ dragon: transformDragonResponse(response) })
+        }
     } catch (e) {
         return next(new HttpError('Not signed', 403))
     }
 }
-
-// export async function breedDragons(req, res, next) {
-//     const {
-//         accountId,
-//         message,
-//         signedMessage,
-//         publicKey,
-//         dragon1Id,
-//         dragon2Id,
-//         privateKey,
-//     } = req.body
-//     console.log('dragon ids', dragon1Id, dragon2Id)
-//     if (!verifyMessage(message, signedMessage, publicKey)) {
-//         return next(new HttpError('Not signed', 403))
-//     }
-
-//     // @ts-ignore
-//     const newDragon: IDragon = await contract.breedDragons(
-//         {
-//             owner: accountId,
-//             dragon1Id,
-//             dragon2Id,
-//         },
-//         config.GAS
-//     )
-//     console.log('new dragon id', newDragon.id)
-//     res.status(200).send({ dragon: newDragon })
-// }
 
 export async function breedDragonTxHash(req, res, next) {
     const { accountId, dragon1Id, dragon2Id, privateKey, publicKey } = req.body
@@ -102,7 +91,6 @@ export async function breedDragonTxHash(req, res, next) {
 
 export async function buyDragonTxHash(req, res, next) {
     const { accountId, privateKey, publicKey, price, id } = req.body
-    console.log('here ya know')
     const hash = await getSignedTransactionUrl(
         accountId,
         privateKey,
@@ -120,7 +108,7 @@ export async function addDragonToMarket(req, res, next) {
 
     console.log(price, id)
     try {
-        const dragon: IMarketDragonResponse = await call(
+        const dragon: IDragonResponse = await call(
             accountId,
             privateKey,
             undefined,
@@ -129,17 +117,54 @@ export async function addDragonToMarket(req, res, next) {
         )
         console.log(dragon)
         await modifyDragonMarket(dragon, 'add')
-        await modifyMarket(dragon, 'add')
-        res.status(200).send({ dragon })
+        res.status(200).send({ dragon, isSuccess: true })
     } catch (e) {
         return next(new HttpError('Failed to add dragon to market.', 400))
+    }
+}
+
+export async function seedDatabase(req, res, next) {
+    const { startId, numberOfDragons } = req.body
+    const endId = startId + numberOfDragons
+    const dragons: IDragonResponse[] = []
+    for (let i = startId; i < endId; i++) {
+        const dragon = createRandoDrago(i)
+        dragons.push(dragon)
+        // await modifyDragonMarket(dragon, 'add')
+    }
+    await _seedDatabase(dragons)
+    res.status(200).send({ status: 'ok' })
+}
+
+function getRandom(maxVal: number) {
+    const g = Math.floor(Math.random() * (maxVal + 1))
+    return g < maxVal + 1 ? g : maxVal
+}
+
+function createRandoDrago(id: number): IDragonResponse {
+    const price = Math.ceil(Math.random() * 100).toString()
+    const colors = [getRandom(7), getRandom(7)]
+    const genes = []
+    for (let i = 0; i < 12; i++) {
+        genes.push(getRandom(2))
+    }
+
+    return {
+        id: id.toString(),
+        owner: 'ryzm.testnet',
+        parent1: 0,
+        parent2: 0,
+        colors,
+        genes,
+        price,
+        oldPrice: '0',
     }
 }
 
 export async function removeDragonFromMarket(req, res, next) {
     const { accountId, id, privateKey } = req.body
     try {
-        const dragon: IMarketDragonResponse = await call(
+        const dragon: IDragonResponse = await call(
             accountId,
             privateKey,
             undefined,
@@ -148,34 +173,9 @@ export async function removeDragonFromMarket(req, res, next) {
         )
         console.log(dragon)
         await modifyDragonMarket(dragon, 'remove')
-        await modifyMarket(dragon, 'remove')
-        res.status(200).send({ dragon })
+        res.status(200).send({ dragon, isSuccess: true })
     } catch (e) {
         return next(new HttpError('Failed to remove dragon from market.', 400))
-    }
-}
-
-export async function getDragonsOnMarket(req, res, next) {
-    if (req.query.page) {
-        try {
-            const page = parseInt(req.query.page)
-            // @ts-ignore
-            const dragons: IDragon[] = await contract.getDragonsOnMarket({
-                page,
-            })
-            console.log('dragons from market', dragons)
-            res.status(200).send({ dragons })
-        } catch (e) {
-            return next(new HttpError('Failed to get dragons from market', 400))
-        }
-    } else {
-        try {
-            // @ts-ignore
-            const numberOfDragons: number = await contract.getNumberOfDragonsOnMarket()
-            res.status(200).send({ numberOfDragons })
-        } catch (e) {
-            return next(new HttpError('Failed to get number of dragons', 400))
-        }
     }
 }
 
@@ -205,15 +205,6 @@ export async function getDragonIdsForOwner(req, res, next) {
     }
 }
 
-// export async function updateMarketSchema(req, res, next) {
-//     const dragon: IDragon = req.body.dragon
-//     let action: 'add' | 'remove' | undefined = req.body.action
-//     action = !action ? 'add' : action
-//     const marketDragon: IMarketDragon = transformDragon(dragon)
-//     await modifyMarket(marketDragon, action)
-//     res.status(200).send({ h: 'ok' })
-// }
-
 export async function queryMarketDragons(req, res, next) {
     let dragons: IMarketDragon[] = []
     if (req.query.dragons) {
@@ -221,31 +212,55 @@ export async function queryMarketDragons(req, res, next) {
         dragons = await getMarketDragonResponse(dragonIds)
         res.status(200).send({ dragons, dragonIds })
     } else {
-        // const filters: IFilter[] = []
+        // const t1 = Date.now()
+        // const result: any = await Dragon.find({}).sort({ price: 1 })
+        // const t2 = Date.now()
         const marketFilter: IMarketFilter = getMarketFilter()
         MAIN_LOOKUP_TYPES.forEach((type) => {
             const value = req.query[type]
             if (value != undefined) {
                 marketFilter[type] = value
-                // filters.push({ lookupType: type, lookupValue: value })
             }
         })
+        const chunk = req.query.chunk ? req.query.chunk : 0
         const { mainFilter, secondaryFilter } = transformMarketFilter(
             marketFilter
         )
-        // const getAll = filters.length === 0
-        // if (getAll) {
-        //     filters.push({ lookupType: 'all' })
-        // }
+        let sortOrder = req.query.sort_order ? req.query.sort_order : 1
+        sortOrder = Math.abs(sortOrder) != 1 ? 1 : sortOrder
         const { dragons, dragonIds } = await getFilteredDragons(
             mainFilter,
-            secondaryFilter
+            secondaryFilter,
+            sortOrder
         )
-        // const filteredDragonIds: Array<any[]> = await getFilteredDragonIds(
-        //     filters
-        // )
-        // const dragonIds = getOverlappingIds(filteredDragonIds)
-        // dragons = await getMarketDragonResponse(dragonIds)
-        res.status(200).send({ dragons, dragonIds })
+        const dragonRes = dragons.slice(chunk * 1000, (chunk + 1) * 1000)
+        // const t3 = Date.now()
+        // console.log(result)
+        // console.log('first', t2 - t1, 'second', t3 - t2)
+        res.status(200).send({ dragons: dragonRes, dragonIds })
+    }
+}
+
+export async function getDragonsOnMarket(req, res, next) {
+    if (req.query.page) {
+        try {
+            const page = parseInt(req.query.page)
+            // @ts-ignore
+            const dragons: IDragon[] = await contract.getDragonsOnMarket({
+                page,
+            })
+            console.log('dragons from market', dragons)
+            res.status(200).send({ dragons })
+        } catch (e) {
+            return next(new HttpError('Failed to get dragons from market', 400))
+        }
+    } else {
+        try {
+            // @ts-ignore
+            const numberOfDragons: number = await contract.getNumberOfDragonsOnMarket()
+            res.status(200).send({ numberOfDragons })
+        } catch (e) {
+            return next(new HttpError('Failed to get number of dragons', 400))
+        }
     }
 }
